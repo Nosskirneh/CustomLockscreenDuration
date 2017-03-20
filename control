@@ -1,0 +1,10 @@
+Package: se.nosskirneh.customlockscreenduration
+Name: CustomLockscreenDuration
+Version: 1.1
+Description: Customize the duration before going to sleep on lockscreen
+Depiction: https://andreashenriksson.se/repo/depictions/?p=se.nosskirneh.customlockscreenduration
+Depends: mobilesubstrate (>= 0.9.5000)
+Architecture: iphoneos-arm
+Maintainer: Andreas Henriksson
+Author: Andreas Henriksson
+Section: Tweaks
