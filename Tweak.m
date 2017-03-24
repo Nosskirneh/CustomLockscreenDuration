@@ -2,8 +2,8 @@ long long duration;
 
 static void loadPrefs() {
     Boolean exists = false;
-    CFPreferencesAppSynchronize(CFSTR("se.nosskirneh.cldprefs"));
-    duration = CFPreferencesGetAppIntegerValue(CFSTR("duration"), CFSTR("se.nosskirneh.cldprefs"), &exists);
+    CFPreferencesAppSynchronize(CFSTR("se.nosskirneh.customlockduration"));
+    duration = CFPreferencesGetAppIntegerValue(CFSTR("duration"), CFSTR("se.nosskirneh.customlockduration"), &exists);
     if (!exists) HBLogError(@"Could not save get timer setting from plist!");
 }
 

@@ -15,16 +15,20 @@
 	return _specifiers;
 }
 
-- (void)sourceCode {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Nosskirneh/CustomLockscreenDuration"]];
-}
-
 - (void)donate {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/nosskirneh"]];
 }
 
 - (void)sendEmail {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto:andreaskhenriksson@gmail.com@gmail.com?subject=CustomLockscreenDuration"]];
+}
+
+- (void)sourceCode {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Nosskirneh/CustomLockscreenDuration"]];
+}
+
+- (void)icon {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://emojione.com/"]];
 }
 
 @end

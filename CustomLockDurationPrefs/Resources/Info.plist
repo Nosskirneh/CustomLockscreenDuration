@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>prefs</string>
+	<string>CustomLockDurationPrefs</string>
 	<key>CFBundleIdentifier</key>
 	<string>se.nosskirneh.cldprefs</string>
 	<key>CFBundleInfoDictionaryVersion</key>

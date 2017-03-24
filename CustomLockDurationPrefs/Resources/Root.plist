@@ -29,7 +29,7 @@
 			<key>cell</key>
 			<string>PSSegmentCell</string>
 			<key>defaults</key>
-			<string>se.nosskirneh.cldprefs</string>
+			<string>se.nosskirneh.customlockduration</string>
 			<key>key</key>
 			<string>duration</string>
 			<key>validTitles</key>
@@ -98,6 +98,16 @@
             <string>github.png</string>
             <key>label</key>
             <string>Source code on GitHub</string>
+        </dict>
+        <dict>
+            <key>action</key>
+            <string>icon</string>
+            <key>cell</key>
+            <string>PSButtonCell</string>
+            <key>icon</key>
+            <string>icon.png</string>
+            <key>label</key>
+            <string>Icon taken from EmojiOne</string>
         </dict>
         <dict>
             <key>cell</key>

@@ -1,10 +1,10 @@
 include $(THEOS)/makefiles/common.mk
 
-BUNDLE_NAME = prefs
-prefs_FILES = CLDPrefsRootListController.m
-prefs_INSTALL_PATH = /Library/PreferenceBundles
-prefs_FRAMEWORKS = UIKit
-prefs_PRIVATE_FRAMEWORKS = Preferences
+BUNDLE_NAME = CustomLockDurationPrefs
+CustomLockDurationPrefs_FILES = CLDPrefsRootListController.m
+CustomLockDurationPrefs_INSTALL_PATH = /Library/PreferenceBundles
+CustomLockDurationPrefs_FRAMEWORKS = UIKit
+CustomLockDurationPrefs_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
