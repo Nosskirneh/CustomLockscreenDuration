@@ -1,17 +1,51 @@
 #import <Preferences/PSListController.h>
+#import "Preferences/PSSpecifier.h"
 
 @interface CLDPrefsRootListController : PSListController
-
 @end
+
+CLDPrefsRootListController *listController;
+#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
+
+static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    [listController.table reloadData];
+    return;
+}
 
 
 @implementation CLDPrefsRootListController
 
+- (id)readPreferenceValue:(PSSpecifier*)specifier {
+    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
+   
+    if (!preferences[specifier.properties[@"key"]]) {
+        return specifier.properties[@"default"];
+    }
+
+    return preferences[specifier.properties[@"key"]];
+}
+
+- (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+    NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
+    [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
+    [defaults setObject:value forKey:specifier.properties[@"key"]];
+    [defaults writeToFile:prefPath atomically:YES];
+    CFStringRef cldpost = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), cldpost, NULL, NULL, YES);
+}
+
+- (void)loadView {
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) PreferencesChangedCallback, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+    [super loadView];
+
+}
+
 - (NSArray *)specifiers {
 	if (!_specifiers) {
-		_specifiers = [[self loadSpecifiersFromPlistName:@"Root" target:self] retain];
+		_specifiers = [self loadSpecifiersFromPlistName:@"Root" target:self];
 	}
 
+    listController = self;
 	return _specifiers;
 }
 

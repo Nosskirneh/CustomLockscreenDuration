@@ -1,9 +1,11 @@
 long long duration;
+BOOL enabled;
 
 static void loadPrefs() {
     Boolean exists = false;
     CFPreferencesAppSynchronize(CFSTR("se.nosskirneh.customlockduration"));
     duration = CFPreferencesGetAppIntegerValue(CFSTR("duration"), CFSTR("se.nosskirneh.customlockduration"), &exists);
+    enabled = CFPreferencesGetAppBooleanValue(CFSTR("enabled"), CFSTR("se.nosskirneh.customlockduration"), &exists);
     if (!exists) HBLogError(@"Could not save get timer setting from plist!");
 }
 
@@ -26,7 +28,7 @@ void updateSettings(CFNotificationCenterRef center,
 %hook SBDashBoardBehavior
 
 - (void)setIdleTimerDuration:(long long)arg {
-    %orig(duration);
+    %orig(enabled ? duration : arg);
 }
 
 %end
@@ -34,7 +36,7 @@ void updateSettings(CFNotificationCenterRef center,
 %hook SBDashBoardIdleTimerEventPublisher
 
 - (BOOL)isEnabled {
-    return (duration == 0) ? NO : %orig;
+    return (enabled && duration == 0) ? NO : %orig;
 }
 
 %end

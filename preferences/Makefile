@@ -2,6 +2,7 @@ include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = CustomLockDurationPrefs
 CustomLockDurationPrefs_FILES = CLDPrefsRootListController.m
+CustomLockDurationPrefs_CFLAGS = -fobjc-arc
 CustomLockDurationPrefs_INSTALL_PATH = /Library/PreferenceBundles
 CustomLockDurationPrefs_FRAMEWORKS = UIKit
 CustomLockDurationPrefs_PRIVATE_FRAMEWORKS = Preferences

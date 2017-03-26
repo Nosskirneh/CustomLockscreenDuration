@@ -9,4 +9,5 @@ after-install::
 	install.exec "killall -9 SpringBoard"
 
 SUBPROJECTS += preferences
+SUBPROJECTS += flipswitch
 include $(THEOS_MAKE_PATH)/aggregate.mk
