@@ -1,27 +1,30 @@
+#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
+
 long long duration;
 BOOL enabled;
 
-static void loadPrefs() {
-    Boolean exists = false;
-    CFPreferencesAppSynchronize(CFSTR("se.nosskirneh.customlockduration"));
-    duration = CFPreferencesGetAppIntegerValue(CFSTR("duration"), CFSTR("se.nosskirneh.customlockduration"), &exists);
-    enabled = CFPreferencesGetAppBooleanValue(CFSTR("enabled"), CFSTR("se.nosskirneh.customlockduration"), &exists);
-    if (!exists) HBLogError(@"Could not save get timer setting from plist!");
+static void reloadPrefs() {
+    NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
+    [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
+    enabled = [[defaults objectForKey:@"enabled"] boolValue];
+    duration = [[defaults objectForKey:@"duration"] integerValue];
+    HBLogDebug(@"enabled: %d", enabled);
+    HBLogDebug(@"duration: %lld", duration);
 }
-
 
 void updateSettings(CFNotificationCenterRef center,
                     void *observer,
                     CFStringRef name,
                     const void *object,
                     CFDictionaryRef userInfo) {
-    loadPrefs();
+    reloadPrefs();
 }
 
 
 %ctor {
-    loadPrefs();
+    reloadPrefs();
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFStringRef(@"se.nosskirneh.customlockscreenduration/preferencesChanged"), NULL, 0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) updateSettings, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     
 }
 
