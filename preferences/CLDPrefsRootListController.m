@@ -1,5 +1,7 @@
 #import <Preferences/PSListController.h>
 #import "Preferences/PSSpecifier.h"
+#import "Preferences/PSControlTableCell.h"
+
 
 @interface CLDPrefsRootListController : PSListController
 @end
@@ -15,23 +17,68 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 
 @implementation CLDPrefsRootListController
 
+- (void)setCellForRowAtIndexPath:(NSIndexPath *)indexPath enabled:(BOOL)enabled {
+    UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section]];
+    if (cell) {
+        cell.userInteractionEnabled = enabled;
+        cell.textLabel.enabled = enabled;
+        cell.detailTextLabel.enabled = enabled;
+        
+        if ([cell isKindOfClass:[PSControlTableCell class]]) {
+            PSControlTableCell *controlCell = (PSControlTableCell *)cell;
+            if (controlCell.control) {
+                controlCell.control.enabled = enabled;
+            }
+        }
+    }
+}
+
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
     NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
-   
-    if (!preferences[specifier.properties[@"key"]]) {
+
+    NSString *key = [specifier propertyForKey:@"key"];
+    if (!preferences[key]) {
         return specifier.properties[@"default"];
     }
+    
+    if ([key isEqualToString:@"enabled"]) {
+        BOOL enableCell = [[preferences objectForKey:key] boolValue];
+        [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1] enabled:enableCell];
+        [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] enabled:enableCell];
+        if (enableCell ^ [[preferences objectForKey:@"chargeMode"] boolValue]) {
+            [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:NO];
+        } else {
+            [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:enableCell];
+        }
+    }
 
-    return preferences[specifier.properties[@"key"]];
+    return preferences[key];
 }
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
+    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
+    NSString *key = [specifier propertyForKey:@"key"];
+
+    if ([key isEqualToString:@"chargeMode"]) {
+        [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:[value boolValue]];
+    }
+    
+    if ([key isEqualToString:@"enabled"]) {
+        [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1] enabled:[value boolValue]];
+        [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] enabled:[value boolValue]];
+        if ([value boolValue] ^ [[preferences objectForKey:@"chargeMode"] boolValue]) {
+            [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:NO];
+        } else {
+            [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:[value boolValue]];
+        }
+    }
+    
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
     [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
     [defaults setObject:value forKey:specifier.properties[@"key"]];
     [defaults writeToFile:prefPath atomically:YES];
-    CFStringRef cldpost = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), cldpost, NULL, NULL, YES);
+    CFStringRef post = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), post, NULL, NULL, YES);
 }
 
 - (void)loadView {
@@ -65,10 +112,6 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://emojione.com/"]];
 }
 
-@end
-
-@interface PSTableCell : UITableViewCell
-- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier specifier:(PSSpecifier *)specifier;
 @end
 
 @interface CLDHeaderCell : PSTableCell

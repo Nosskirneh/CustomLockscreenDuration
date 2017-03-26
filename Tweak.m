@@ -1,3 +1,5 @@
+#import <SpringBoard/SBUIController.h>
+
 #define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
 
 long long duration;
@@ -29,6 +31,7 @@ void updateSettings(CFNotificationCenterRef center,
 %hook SBDashBoardBehavior
 
 - (void)setIdleTimerDuration:(long long)arg {
+    HBLogDebug(@"charging: %d", [[%c(SBUIController) sharedInstance] isBatteryCharging]);
     %orig(enabled ? duration : arg);
 }
 

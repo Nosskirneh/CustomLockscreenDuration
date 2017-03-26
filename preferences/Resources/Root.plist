@@ -19,10 +19,6 @@
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Settings</string>
-            <key>footerAlignment</key>
-            <integer>0</integer>
-            <key>footerText</key>
-            <string>Choose 0 for infinity.</string>
 		</dict>
 
         <dict>
@@ -76,6 +72,67 @@
 			<key>PostNotification</key>
             <string>se.nosskirneh.customlockscreenduration/preferencesChanged</string>
 		</dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSGroupCell</string>
+            <key>footerAlignment</key>
+            <integer>0</integer>
+            <key>footerText</key>
+            <string>Choose 0 for infinity.</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSSwitchCell</string>
+            <key>default</key>
+            <false/>
+            <key>defaults</key>
+            <string>se.nosskirneh.customlockduration</string>
+            <key>key</key>
+            <string>chargeMode</string>
+            <key>label</key>
+            <string>Differentiate on charging</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.customlockscreenduration/preferencesChanged</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
+            <string>PSSegmentCell</string>
+            <key>defaults</key>
+            <string>se.nosskirneh.customlockduration</string>
+            <key>key</key>
+            <string>chargingDuration</string>
+            <key>validTitles</key>
+            <array>
+                <string>0</string>
+                <string>2</string>
+                <string>7</string>
+                <string>10</string>
+                <string>16</string>
+                <string>20</string>
+                <string>26</string>
+                <string>31</string>
+                <string>40</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <string>0</string>
+                <string>2</string>
+                <string>1</string>
+                <string>3</string>
+                <string>4</string>
+                <string>5</string>
+                <string>6</string>
+                <string>7</string>
+                <string>8</string>
+            </array>
+            <key>default</key>
+            <string>1</string>
+            <key>PostNotification</key>
+            <string>se.nosskirneh.customlockscreenduration/preferencesChanged</string>
+        </dict>
 
 		<!-- About -->
 		<dict>
