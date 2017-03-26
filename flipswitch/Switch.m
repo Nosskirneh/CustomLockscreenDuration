@@ -29,7 +29,7 @@ NSMutableDictionary *preferences;
 
     // Save changes
     preferences = [NSMutableDictionary dictionaryWithContentsOfFile:[prefPath stringByExpandingTildeInPath]];
-    [preferences setObject:[NSNumber numberWithBool:newState]forKey:@"enabled"];
+    [preferences setObject:[NSNumber numberWithBool:newState] forKey:@"enabled"];
     [preferences writeToFile:prefPath atomically:YES];
 
     // Notify tweak

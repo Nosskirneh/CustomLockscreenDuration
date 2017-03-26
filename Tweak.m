@@ -8,8 +8,6 @@ static void reloadPrefs() {
     [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
     enabled = [[defaults objectForKey:@"enabled"] boolValue];
     duration = [[defaults objectForKey:@"duration"] integerValue];
-    HBLogDebug(@"enabled: %d", enabled);
-    HBLogDebug(@"duration: %lld", duration);
 }
 
 void updateSettings(CFNotificationCenterRef center,
