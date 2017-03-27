@@ -2,14 +2,18 @@
 
 #define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
 
-long long duration;
 BOOL enabled;
+long long duration;
+BOOL chargeMode;
+long long chargingDuration;
 
 static void reloadPrefs() {
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
     [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
     enabled = [[defaults objectForKey:@"enabled"] boolValue];
     duration = [[defaults objectForKey:@"duration"] integerValue];
+    chargeMode = [[defaults objectForKey:@"chargeMode"] boolValue];
+    chargingDuration = [[defaults objectForKey:@"chargingDuration"] integerValue];
 }
 
 void updateSettings(CFNotificationCenterRef center,
@@ -31,8 +35,13 @@ void updateSettings(CFNotificationCenterRef center,
 %hook SBDashBoardBehavior
 
 - (void)setIdleTimerDuration:(long long)arg {
-    HBLogDebug(@"charging: %d", [[%c(SBUIController) sharedInstance] isBatteryCharging]);
-    %orig(enabled ? duration : arg);
+    if (enabled) {
+        BOOL charging = [[%c(SBUIController) sharedInstance] isBatteryCharging];
+        %orig((chargeMode && charging) ? chargingDuration : duration);
+        return;
+    }
+    
+    %orig(arg);
 }
 
 %end
@@ -40,7 +49,9 @@ void updateSettings(CFNotificationCenterRef center,
 %hook SBDashBoardIdleTimerEventPublisher
 
 - (BOOL)isEnabled {
-    return (enabled && duration == 0) ? NO : %orig;
+    BOOL charging = [[%c(SBUIController) sharedInstance] isBatteryCharging];
+    BOOL infite = ((chargeMode && charging && chargingDuration == 0) || (!chargeMode && duration == 0));
+    return (enabled && infite) ? NO : %orig;
 }
 
 %end
