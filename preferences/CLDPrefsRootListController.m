@@ -1,13 +1,11 @@
-#import <Preferences/PSListController.h>
-#import "Preferences/PSSpecifier.h"
-#import "Preferences/PSControlTableCell.h"
+#import <Preferences/Preferences.h>
 
 
 @interface CLDPrefsRootListController : PSListController
 @end
 
 CLDPrefsRootListController *listController;
-#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
+#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.customlockduration.plist"]
 
 static void PreferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
     [listController.table reloadData];
@@ -166,15 +164,20 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 
 @end
 
-@interface RedSwitchTableCell : PSSwitchTableCell
+// Colorful UISwitches
+@interface PSSwitchTableCell : PSControlTableCell
+- (id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier;
 @end
 
-@implementation RedSwitchTableCell
+@interface SRSwitchTableCell : PSSwitchTableCell
+@end
+
+@implementation SRSwitchTableCell
 
 -(id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
     if (self) {
-        [((UISwitch *)[self control]) setOnTintColor:[UIColor redColor]];
+        [((UISwitch *)[self control]) setOnTintColor:[UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0]];
     }
     return self;
 }
