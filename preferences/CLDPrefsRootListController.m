@@ -101,7 +101,7 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 }
 
 - (void)sendEmail {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto:andreaskhenriksson@gmail.com@gmail.com?subject=CustomLockscreenDuration"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"mailto:andreaskhenriksson@gmail.com?subject=CustomLockscreenDuration"]];
 }
 
 - (void)sourceCode {
@@ -162,6 +162,21 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 - (CGFloat)preferredHeightForWidth:(CGFloat)width {
     // Return a custom cell height.
     return 80;
+}
+
+@end
+
+@interface RedSwitchTableCell : PSSwitchTableCell
+@end
+
+@implementation RedSwitchTableCell
+
+-(id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier {
+    self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
+    if (self) {
+        [((UISwitch *)[self control]) setOnTintColor:[UIColor redColor]];
+    }
+    return self;
 }
 
 @end
