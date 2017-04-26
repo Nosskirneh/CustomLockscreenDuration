@@ -25,7 +25,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>cellClass</key>
-            <string>SRSwitchTableCell</string>
+            <string>CLDSwitchTableCell</string>
             <key>default</key>
             <false/>
             <key>defaults</key>
@@ -88,7 +88,7 @@
             <key>cell</key>
             <string>PSSwitchCell</string>
             <key>cellClass</key>
-            <string>SRSwitchTableCell</string>
+            <string>CLDSwitchTableCell</string>
             <key>default</key>
             <false/>
             <key>defaults</key>

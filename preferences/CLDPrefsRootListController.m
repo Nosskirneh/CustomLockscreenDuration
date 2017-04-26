@@ -169,10 +169,10 @@ static void PreferencesChangedCallback(CFNotificationCenterRef center, void *obs
 - (id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier;
 @end
 
-@interface SRSwitchTableCell : PSSwitchTableCell
+@interface CLDSwitchTableCell : PSSwitchTableCell
 @end
 
-@implementation SRSwitchTableCell
+@implementation CLDSwitchTableCell
 
 -(id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
