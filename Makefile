@@ -1,3 +1,5 @@
+TARGET = iphone:clang:9.2
+
 include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = CustomLockscreenDuration

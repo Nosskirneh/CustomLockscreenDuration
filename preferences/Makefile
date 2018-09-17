@@ -1,3 +1,5 @@
+TARGET = iphone:clang:9.2
+
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = CustomLockDurationPrefs
