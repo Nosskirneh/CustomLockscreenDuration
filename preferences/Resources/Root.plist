@@ -47,7 +47,6 @@
 			<string>duration</string>
 			<key>validTitles</key>
 			<array>
-				<string>0</string>
 				<string>2</string>
 				<string>7</string>
 				<string>10</string>
@@ -56,10 +55,10 @@
 				<string>26</string>
 				<string>31</string>
 				<string>40</string>
+                <string>∞</string>
 			</array>
 			<key>validValues</key>
 			<array>
-				<string>0</string>
 				<string>2</string>
 				<string>1</string>
 				<string>3</string>
@@ -68,21 +67,13 @@
 				<string>6</string>
 				<string>7</string>
 				<string>8</string>
+                <string>0</string>
 			</array>
 			<key>default</key>
 			<string>1</string>
 			<key>PostNotification</key>
             <string>se.nosskirneh.customlockscreenduration/preferencesChanged</string>
 		</dict>
-
-        <dict>
-            <key>cell</key>
-            <string>PSGroupCell</string>
-            <key>footerAlignment</key>
-            <integer>0</integer>
-            <key>footerText</key>
-            <string>Choose 0 for infinity.</string>
-        </dict>
 
         <dict>
             <key>cell</key>
@@ -110,7 +101,6 @@
             <string>chargingDuration</string>
             <key>validTitles</key>
             <array>
-                <string>0</string>
                 <string>2</string>
                 <string>7</string>
                 <string>10</string>
@@ -119,10 +109,10 @@
                 <string>26</string>
                 <string>31</string>
                 <string>40</string>
+                <string>∞</string>
             </array>
             <key>validValues</key>
             <array>
-                <string>0</string>
                 <string>2</string>
                 <string>1</string>
                 <string>3</string>
@@ -131,6 +121,7 @@
                 <string>6</string>
                 <string>7</string>
                 <string>8</string>
+                <string>0</string>
             </array>
             <key>default</key>
             <string>1</string>
@@ -191,7 +182,7 @@
             <key>footerAlignment</key>
             <integer>1</integer>
             <key>footerText</key>
-            <string>© 2017 Andreas Henriksson</string>
+            <string>© 2018 Andreas Henriksson</string>
         </dict>
 
 	</array>
