@@ -24,14 +24,6 @@ void updateSettings(CFNotificationCenterRef center,
     reloadPrefs();
 }
 
-
-%ctor {
-    reloadPrefs();
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFStringRef(@"se.nosskirneh.customlockscreenduration/preferencesChanged"), NULL, 0);
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback) updateSettings, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-    
-}
-
 %hook SBDashBoardBehavior
 
 - (void)setIdleTimerDuration:(long long)arg {
@@ -46,6 +38,7 @@ void updateSettings(CFNotificationCenterRef center,
 
 %end
 
+%group iOS10
 %hook SBDashBoardIdleTimerEventPublisher
 
 - (BOOL)isEnabled {
@@ -55,3 +48,29 @@ void updateSettings(CFNotificationCenterRef center,
 }
 
 %end
+%end
+
+%group iOS11
+%hook SBDashBoardIdleTimerProvider
+
+- (BOOL)isIdleTimerEnabled {
+    BOOL charging = [[%c(SBUIController) sharedInstance] isBatteryCharging];
+    BOOL infite = ((chargeMode && charging && chargingDuration == 0) || (!chargeMode && duration == 0));
+    return (enabled && infite) ? NO : %orig;    
+}
+
+%end
+%end
+
+
+%ctor {
+    reloadPrefs();
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFSTR("se.nosskirneh.customlockscreenduration/preferencesChanged"), NULL, 0);
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, 0);
+
+    %init;
+    if (%c(SBDashBoardIdleTimerEventPublisher))
+        %init(iOS10);
+    else if (%c(SBDashBoardIdleTimerProvider))
+        %init(iOS11)
+}
