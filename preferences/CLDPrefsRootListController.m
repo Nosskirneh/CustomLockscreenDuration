@@ -10,7 +10,7 @@
 @implementation CLDPrefsRootListController
 
 - (void)setCellForRowAtIndexPath:(NSIndexPath *)indexPath enabled:(BOOL)enabled {
-    UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:indexPath.section]];
+    UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:indexPath];
     if (cell) {
         cell.userInteractionEnabled = enabled;
         cell.textLabel.enabled = enabled;
@@ -18,9 +18,8 @@
         
         if ([cell isKindOfClass:[PSControlTableCell class]]) {
             PSControlTableCell *controlCell = (PSControlTableCell *)cell;
-            if (controlCell.control) {
+            if (controlCell.control)
                 controlCell.control.enabled = enabled;
-            }
         }
     }
 }
@@ -29,19 +28,18 @@
     NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
 
     NSString *key = [specifier propertyForKey:@"key"];
-    if (!preferences[key]) {
+    if (!preferences[key])
         return specifier.properties[@"default"];
-    }
     
     if ([key isEqualToString:@"enabled"]) {
         BOOL enableCell = [[preferences objectForKey:key] boolValue];
         [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1] enabled:enableCell];
         [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] enabled:enableCell];
-        if (enableCell ^ [[preferences objectForKey:@"chargeMode"] boolValue]) {
+
+        if (enableCell ^ [[preferences objectForKey:@"chargeMode"] boolValue])
             [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:NO];
-        } else {
+        else
             [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:enableCell];
-        }
     }
 
     return preferences[key];
@@ -51,18 +49,17 @@
     NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
     NSString *key = [specifier propertyForKey:@"key"];
 
-    if ([key isEqualToString:@"chargeMode"]) {
+    if ([key isEqualToString:@"chargeMode"])
         [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:[value boolValue]];
-    }
     
     if ([key isEqualToString:@"enabled"]) {
         [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:1] enabled:[value boolValue]];
         [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:2] enabled:[value boolValue]];
-        if ([value boolValue] ^ [[preferences objectForKey:@"chargeMode"] boolValue]) {
+
+        if ([value boolValue] ^ [[preferences objectForKey:@"chargeMode"] boolValue])
             [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:NO];
-        } else {
+        else
             [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:[value boolValue]];
-        }
     }
     
     NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
@@ -200,11 +197,10 @@
 
 @implementation CLDSwitchTableCell
 
--(id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier {
+- (id)initWithStyle:(int)style reuseIdentifier:(id)identifier specifier:(id)specifier {
     self = [super initWithStyle:style reuseIdentifier:identifier specifier:specifier];
-    if (self) {
+    if (self)
         [((UISwitch *)[self control]) setOnTintColor:[UIColor colorWithRed:0.00 green:0.48 blue:1.00 alpha:1.0]];
-    }
     return self;
 }
 

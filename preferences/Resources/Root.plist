@@ -77,6 +77,11 @@
 
         <dict>
             <key>cell</key>
+            <string>PSGroupCell</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>
             <string>PSSwitchCell</string>
             <key>cellClass</key>
             <string>CLDSwitchTableCell</string>
