@@ -7,7 +7,18 @@
 #define kTwitterID @"aNosskirneh"
 #define kPresentedFollowAlert @"presented_follow"
 
+CLDPrefsRootListController *listController;
+
+static void preferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+    [listController reloadSpecifiers];
+}
+
+
 @implementation CLDPrefsRootListController
+
+- (id)init {
+    return listController = [super init];
+}
 
 - (void)setCellForRowAtIndexPath:(NSIndexPath *)indexPath enabled:(BOOL)enabled {
     UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:indexPath];
@@ -46,7 +57,7 @@
 }
 
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
     NSString *key = [specifier propertyForKey:@"key"];
 
     if ([key isEqualToString:@"chargeMode"])
@@ -61,11 +72,9 @@
         else
             [self setCellForRowAtIndexPath:[NSIndexPath indexPathForRow:1 inSection:2] enabled:[value boolValue]];
     }
-    
-    NSMutableDictionary *defaults = [NSMutableDictionary dictionary];
-    [defaults addEntriesFromDictionary:[NSDictionary dictionaryWithContentsOfFile:prefPath]];
-    [defaults setObject:value forKey:specifier.properties[@"key"]];
-    [defaults writeToFile:prefPath atomically:YES];
+
+    [preferences setObject:value forKey:key];
+    [preferences writeToFile:prefPath atomically:YES];
     CFStringRef post = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), post, NULL, NULL, YES);
 }
@@ -79,13 +88,18 @@
 
 - (void)loadView {
     [super loadView];
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &preferencesChangedCallback, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
     [self presentFollowAlert];
 }
 
 - (void)presentFollowAlert {
-    NSMutableDictionary *settings = [[NSMutableDictionary alloc] initWithContentsOfFile:prefPath];
-    if ([settings[kPresentedFollowAlert] boolValue])
+    NSMutableDictionary *preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:prefPath];
+    if ([preferences[kPresentedFollowAlert] boolValue])
         return;
+
+    if (!preferences)
+        preferences = [NSMutableDictionary new];
 
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Hi"
                                                                    message:@"Thanks for installing! Would you like to follow me on Twitter to stay updated with my current and upcoming tweaks?"
@@ -94,8 +108,8 @@
     UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Sure"
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
-                                        settings[kPresentedFollowAlert] = @(YES);
-                                        [settings writeToFile:prefPath atomically:YES];
+                                        preferences[kPresentedFollowAlert] = @(YES);
+                                        [preferences writeToFile:prefPath atomically:YES];
 
                                         [self openTwitter];
                                    }];
