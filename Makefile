@@ -9,7 +9,7 @@ CustomLockscreenDurationPrefs_CFLAGS = -fobjc-arc
 include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
-	install.exec "killall -9 Preferences"
+	install.exec "killall -9 SpringBoard"
 
 SUBPROJECTS += preferences
 SUBPROJECTS += flipswitch

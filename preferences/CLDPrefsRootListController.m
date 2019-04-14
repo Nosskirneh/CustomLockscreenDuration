@@ -1,11 +1,10 @@
 #import <Preferences/Preferences.h>
+#import "../../TwitterStuff/Prompt.h"
 
 @interface CLDPrefsRootListController : PSListController
 @end
 
 #define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.customlockduration.plist"]
-#define kTwitterID @"aNosskirneh"
-#define kPresentedFollowAlert @"presented_follow"
 
 CLDPrefsRootListController *listController;
 
@@ -90,45 +89,7 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
     [super loadView];
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &preferencesChangedCallback, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
-    [self presentFollowAlert];
-}
-
-- (void)presentFollowAlert {
-    NSMutableDictionary *preferences = [[NSMutableDictionary alloc] initWithContentsOfFile:prefPath];
-    if ([preferences[kPresentedFollowAlert] boolValue])
-        return;
-
-    if (!preferences)
-        preferences = [NSMutableDictionary new];
-
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Hi"
-                                                                   message:@"Thanks for installing! Would you like to follow me on Twitter to stay updated with my current and upcoming tweaks?"
-                                                             preferredStyle:UIAlertControllerStyleAlert];
-
-    UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"Sure"
-                                                            style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction *action) {
-                                        preferences[kPresentedFollowAlert] = @(YES);
-                                        [preferences writeToFile:prefPath atomically:YES];
-
-                                        [self openTwitter];
-                                   }];
-
-    [alert addAction:defaultAction];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-- (void)openTwitter {
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tweetbot:"]])
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"tweetbot:///user_profile/" stringByAppendingString:kTwitterID]]];
-    else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitterrific:"]])
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"twitterrific:///profile?screen_name=" stringByAppendingString:kTwitterID]]];
-    else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tweetings:"]])
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"tweetings:///user?screen_name=" stringByAppendingString:kTwitterID]]];
-    else if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"twitter:"]])
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"twitter://user?screen_name=" stringByAppendingString:kTwitterID]]];
-    else
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[@"http://twitter.com/" stringByAppendingString:kTwitterID]]];
+    presentFollowAlert(prefPath, self);
 }
 
 - (void)donate {

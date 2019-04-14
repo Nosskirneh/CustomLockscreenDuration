@@ -3,7 +3,7 @@
 #import <notify.h>
 
 NSMutableDictionary *preferences;
-#define prefPath  [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(),@"se.nosskirneh.customlockduration.plist"]
+#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.customlockduration.plist"]
 
 @interface CustomLockscreenDurationSwitch : NSObject <FSSwitchDataSource>
 @end
