@@ -1,4 +1,5 @@
 include $(THEOS)/makefiles/common.mk
+ARCHS = armv7s arm64 arm64e
 
 BUNDLE_NAME = CustomLockDuration
 CustomLockDuration_FILES = Switch.m
