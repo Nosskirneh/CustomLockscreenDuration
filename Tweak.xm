@@ -24,7 +24,7 @@ void updateSettings(CFNotificationCenterRef center,
     reloadPrefs();
 }
 
-%hook SBDashBoardBehavior
+%hook BehaviorClass
 
 - (void)setIdleTimerDuration:(long long)arg {
     if (enabled) {
@@ -68,7 +68,7 @@ void updateSettings(CFNotificationCenterRef center,
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFSTR("se.nosskirneh.customlockscreenduration/preferencesChanged"), NULL, 0);
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &updateSettings, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, 0);
 
-    %init;
+    %init(BehaviorClass = objc_getClass([[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){13,0,0}] ? "CSBehavior" : "SBDashBoardBehavior"));
     if (%c(SBDashBoardIdleTimerEventPublisher))
         %init(iOS10);
     else if (%c(SBDashBoardIdleTimerProvider))
