@@ -1,23 +1,13 @@
 #import <Preferences/Preferences.h>
 #import "../../TwitterStuff/Prompt.h"
+#import "../Common.h"
+#import <notify.h>
 
 @interface CLDPrefsRootListController : PSListController
 @end
 
-#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.customlockduration.plist"]
-
-CLDPrefsRootListController *listController;
-
-static void preferencesChangedCallback(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    [listController reloadSpecifiers];
-}
-
 
 @implementation CLDPrefsRootListController
-
-- (id)init {
-    return listController = [super init];
-}
 
 - (void)setCellForRowAtIndexPath:(NSIndexPath *)indexPath enabled:(BOOL)enabled {
     UITableViewCell *cell = [self tableView:self.table cellForRowAtIndexPath:indexPath];
@@ -35,7 +25,7 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
 }
 
 - (id)readPreferenceValue:(PSSpecifier*)specifier {
-    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:prefPath];
+    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:kPrefPath];
 
     NSString *key = [specifier propertyForKey:@"key"];
     if (!preferences[key])
@@ -55,8 +45,9 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
     return preferences[key];
 }
 
+
 - (void)setPreferenceValue:(id)value specifier:(PSSpecifier *)specifier {
-    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:prefPath];
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:kPrefPath];
     NSString *key = [specifier propertyForKey:@"key"];
 
     if ([key isEqualToString:@"chargeMode"])
@@ -73,7 +64,7 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
     }
 
     [preferences setObject:value forKey:key];
-    [preferences writeToFile:prefPath atomically:YES];
+    [preferences writeToFile:kPrefPath atomically:YES];
     CFStringRef post = (CFStringRef)CFBridgingRetain(specifier.properties[@"PostNotification"]);
     CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), post, NULL, NULL, YES);
 }
@@ -87,13 +78,17 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
 
 - (void)loadView {
     [super loadView];
-    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, &preferencesChangedCallback, CFSTR("se.nosskirneh.customlockscreenduration.FSchanged"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
-    presentFollowAlert(prefPath, self);
+    int _;
+    notify_register_dispatch(kFlipswitchNotification, &_, dispatch_get_main_queue(), ^(int _) {
+        [self reloadSpecifiers];
+    });
+
+    presentFollowAlert(kPrefPath, self);
 }
 
 - (void)donate {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/nosskirneh"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://paypal.me/aNosskirneh"]];
 }
 
 - (void)sendEmail {
@@ -125,7 +120,6 @@ static void preferencesChangedCallback(CFNotificationCenterRef center, void *obs
         
         _headerLabel = [[UILabel alloc] init];
         [_headerLabel setText:@"CustomLockscreenDuration"];
-        [_headerLabel setTextColor:[UIColor blackColor]];
         [_headerLabel setFont:font];
         
         _subheaderLabel = [[UILabel alloc] init];

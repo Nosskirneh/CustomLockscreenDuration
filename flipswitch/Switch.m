@@ -1,11 +1,9 @@
 #import "FSSwitchDataSource.h"
 #import "FSSwitchPanel.h"
+#import "../Common.h"
 #import <notify.h>
 
-NSMutableDictionary *preferences;
-#define prefPath [NSString stringWithFormat:@"%@/Library/Preferences/%@", NSHomeDirectory(), @"se.nosskirneh.customlockduration.plist"]
-
-@interface CustomLockscreenDurationSwitch : NSObject <FSSwitchDataSource>
+@interface CustomLockscreenDurationSwitch : NSObject<FSSwitchDataSource>
 @end
 
 @implementation CustomLockscreenDurationSwitch
@@ -16,24 +14,23 @@ NSMutableDictionary *preferences;
 
 - (FSSwitchState)stateForSwitchIdentifier:(NSString *)switchIdentifier {
     // Update setting
-    preferences = [NSMutableDictionary dictionaryWithContentsOfFile:[prefPath stringByExpandingTildeInPath]];
+    NSDictionary *preferences = [NSDictionary dictionaryWithContentsOfFile:kPrefPath];
     
-    BOOL enabled = [[preferences objectForKey:@"enabled"] boolValue];
+    BOOL enabled = [preferences[@"enabled"] boolValue];
     return (enabled) ? FSSwitchStateOn : FSSwitchStateOff;
 }
 
 - (void)applyState:(FSSwitchState)newState forSwitchIdentifier:(NSString *)switchIdentifier {
-	if (newState == FSSwitchStateIndeterminate) {
+	if (newState == FSSwitchStateIndeterminate)
         return;
-    }
 
     // Save changes
-    preferences = [NSMutableDictionary dictionaryWithContentsOfFile:[prefPath stringByExpandingTildeInPath]];
-    [preferences setObject:[NSNumber numberWithBool:newState] forKey:@"enabled"];
-    [preferences writeToFile:prefPath atomically:YES];
+    NSMutableDictionary *preferences = [NSMutableDictionary dictionaryWithContentsOfFile:kPrefPath];
+    preferences[@"enabled"] = @(newState);
+    [preferences writeToFile:kPrefPath atomically:YES];
 
     // Notify tweak
-    notify_post("se.nosskirneh.customlockscreenduration.FSchanged");
+    notify_post(kFlipswitchNotification);
 }
 
 @end

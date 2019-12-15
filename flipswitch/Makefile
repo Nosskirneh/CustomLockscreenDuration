@@ -1,11 +1,12 @@
 include $(THEOS)/makefiles/common.mk
 ARCHS = armv7s arm64 arm64e
 
-BUNDLE_NAME = CustomLockDuration
-CustomLockDuration_FILES = Switch.m
-CustomLockDuration_FRAMEWORKS = UIKit
-CustomLockDuration_LIBRARIES = flipswitch
-CustomLockDuration_INSTALL_PATH = /Library/Switches
+BUNDLE_NAME = CLDSwitch
+$(BUNDLE_NAME)_FILES = Switch.m
+$(BUNDLE_NAME)_CFLAGS = -fobjc-arc
+$(BUNDLE_NAME)_FRAMEWORKS = UIKit
+$(BUNDLE_NAME)_LIBRARIES = flipswitch
+$(BUNDLE_NAME)_INSTALL_PATH = /Library/Switches
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 
